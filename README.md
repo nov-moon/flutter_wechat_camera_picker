@@ -1,0 +1,2 @@
+# flutter_wechat_camera_picker
+自己公司用的微信拍照视频修改的
