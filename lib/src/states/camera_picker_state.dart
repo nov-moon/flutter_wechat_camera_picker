@@ -13,6 +13,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/config.dart';
 import '../constants/constants.dart';
@@ -990,7 +991,18 @@ class CameraPickerState extends State<CameraPicker>
           if (controller?.value.isRecordingVideo != true)
             Expanded(
                 child: IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final List<AssetEntity>? result = await AssetPicker.pickAssets(
+                        context,
+                        pickerConfig: const AssetPickerConfig(
+                            maxAssets:1,
+                        ),
+                      );
+                      if (result != null) {
+                        Navigator.of(context).pop(result.first);
+                        return;
+                      }
+                    },
                     icon: const Icon(
                       Icons.photo_library,
                       color: Colors.white,
