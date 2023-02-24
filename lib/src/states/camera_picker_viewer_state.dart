@@ -29,12 +29,14 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
 
   /// Construct an [File] instance through [previewXFile].
   /// 通过 [previewXFile] 构建 [File] 实例。
-  late final File previewFile = File(widget.previewXFile.path);
+  late final File previewFile = File(widget.previewXFile?.path ?? '');
 
   /// Controller for the video player.
   /// 视频播放的控制器
   late final VideoPlayerController videoController =
-      VideoPlayerController.file(previewFile);
+      (widget.url ?? '').isNotEmpty
+          ? VideoPlayerController.network(widget.url ?? '')
+          : VideoPlayerController.file(previewFile);
 
   /// Whether the controller is playing.
   /// 播放控制器是否在播放
@@ -137,7 +139,7 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
         await widget.pickerConfig.onEntitySaving!(
           context,
           widget.viewType,
-          File(widget.previewXFile.path),
+          File(widget.previewXFile!.path),
         );
       } catch (e, s) {
         handleErrorWithHandler(e, widget.pickerConfig.onError, s: s);
