@@ -860,7 +860,7 @@ class CameraPickerState extends State<CameraPicker>
               const Spacer(),
               if (cameras.length > 1) buildCameraSwitch(context),
               const Spacer(),
-              buildFlashModeSwitch(context, v),
+              Expanded(child: buildFlashModeSwitch(context, v)),
             ],
           ),
         );
@@ -970,31 +970,31 @@ class CameraPickerState extends State<CameraPicker>
       child: Row(
         children: <Widget>[
           if (controller?.value.isRecordingVideo != true)
-          Expanded(
-              child: IconButton(
-                  onPressed: () {
-                    isVideoMode = !isVideoMode;
-                    setState(() {
-
-                    });
-                  },
-                  icon: Icon(
-                    isVideoMode ? Icons.photo : Icons.video_camera_back_rounded,
-                    color: Colors.white,
-                  ))),
+            Expanded(
+                child: IconButton(
+                    onPressed: () {
+                      isVideoMode = !isVideoMode;
+                      setState(() {});
+                    },
+                    icon: Icon(
+                      isVideoMode
+                          ? Icons.photo
+                          : Icons.video_camera_back_rounded,
+                      color: Colors.white,
+                    ))),
           Expanded(
             child: Center(
               child: MergeSemantics(child: buildCaptureButton(constraints)),
             ),
           ),
           if (controller?.value.isRecordingVideo != true)
-          Expanded(
-              child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.photo_library,
-                    color: Colors.white,
-                  ))),
+            Expanded(
+                child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.photo_library,
+                      color: Colors.white,
+                    ))),
         ],
       ),
     );
