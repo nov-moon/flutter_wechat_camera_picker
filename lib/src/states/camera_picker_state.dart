@@ -944,7 +944,11 @@ class CameraPickerState extends State<CameraPicker>
         tips = textDelegate.shootingWithRecordingTips;
       }
     } else {
-      tips = textDelegate.shootingTips;
+      if (isVideoMode) {
+        tips = textDelegate.shootingTapRecordingTips;
+      } else {
+        tips = textDelegate.shootingTips;
+      }
     }
     return AnimatedOpacity(
       duration: recordDetectDuration,
@@ -992,10 +996,11 @@ class CameraPickerState extends State<CameraPicker>
             Expanded(
                 child: IconButton(
                     onPressed: () async {
-                      final List<AssetEntity>? result = await AssetPicker.pickAssets(
+                      final List<AssetEntity>? result =
+                          await AssetPicker.pickAssets(
                         context,
                         pickerConfig: const AssetPickerConfig(
-                            maxAssets:1,
+                          maxAssets: 1,
                         ),
                       );
                       if (result != null) {
