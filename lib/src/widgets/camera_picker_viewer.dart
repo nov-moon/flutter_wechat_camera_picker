@@ -16,10 +16,13 @@ class CameraPickerViewer extends StatefulWidget {
   const CameraPickerViewer._({
     Key? key,
     required this.viewType,
-    required this.previewXFile,
+    this.previewXFile,
     required this.pickerConfig,
     this.createViewerState,
+    this.url,
   }) : super(key: key);
+
+  final String? url;
 
   /// The type of the viewer. (Image | Video)
   /// 预览的类型（图片或视频）
@@ -27,7 +30,7 @@ class CameraPickerViewer extends StatefulWidget {
 
   /// The [XFile] of the preview file.
   /// 预览文件的 [XFile] 实例
-  final XFile previewXFile;
+  final XFile? previewXFile;
 
   /// {@macro wechat_camera_picker.CameraPickerConfig}
   final CameraPickerConfig pickerConfig;
@@ -54,6 +57,40 @@ class CameraPickerViewer extends StatefulWidget {
         pageBuilder: (_, __, ___) => CameraPickerViewer._(
           viewType: viewType,
           previewXFile: previewXFile,
+          pickerConfig: pickerConfig,
+          createViewerState: createViewerState,
+          url: '',
+        ),
+        transitionsBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+          Widget child,
+        ) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    );
+  }
+
+  /// Static method to push with the navigator.
+  /// 跳转至选择预览的静态方法
+  static Future<AssetEntity?> pushToViewerUrl(
+    BuildContext context, {
+    required CameraPickerConfig pickerConfig,
+    required CameraPickerViewType viewType,
+    required String url,
+    CameraPickerViewerState Function()? createViewerState,
+    bool useRootNavigator = true,
+  }) {
+    return Navigator.of(
+      context,
+      rootNavigator: useRootNavigator,
+    ).push<AssetEntity?>(
+      PageRouteBuilder<AssetEntity?>(
+        pageBuilder: (_, __, ___) => CameraPickerViewer._(
+          viewType: viewType,
+          url: url,
           pickerConfig: pickerConfig,
           createViewerState: createViewerState,
         ),
