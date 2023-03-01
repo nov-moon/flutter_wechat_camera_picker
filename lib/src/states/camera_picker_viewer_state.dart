@@ -264,9 +264,9 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
       minWidth: 20,
       height: 32,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      color: theme.colorScheme.secondary,
+      color: Colors.grey[600]?.withOpacity(0.9),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(3),
+        borderRadius: BorderRadius.circular(24),
       ),
       onPressed: createAssetEntityAndPop,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
