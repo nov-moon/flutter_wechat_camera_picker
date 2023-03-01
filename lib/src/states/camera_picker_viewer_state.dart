@@ -210,18 +210,19 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
             Navigator.of(context).pop();
           },
           padding: EdgeInsets.zero,
-          constraints: BoxConstraints.tight(const Size.square(28)),
+          constraints: BoxConstraints.tight(const Size.square(32)),
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          iconSize: 18,
           icon: Container(
-            padding: const EdgeInsets.all(5),
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            alignment: Alignment.center,
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: Colors.grey[600]?.withOpacity(0.8),
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.keyboard_return_rounded,
-              color: Colors.black,
+              Icons.close,
+              color: Colors.white,
             ),
           ),
         ),
@@ -264,9 +265,9 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
       minWidth: 20,
       height: 32,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      color: theme.colorScheme.secondary,
+      color: Colors.grey[600]?.withOpacity(0.8),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(3),
+        borderRadius: BorderRadius.circular(24),
       ),
       onPressed: createAssetEntityAndPop,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
