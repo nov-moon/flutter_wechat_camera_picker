@@ -203,6 +203,11 @@ class CameraPickerState extends State<CameraPicker>
     exposureModeDisplayTimer?.cancel();
     recordDetectTimer?.cancel();
     recordCountdownTimer?.cancel();
+    SystemChrome.setPreferredOrientations([
+      // 强制竖屏
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     super.dispose();
   }
 
