@@ -941,7 +941,12 @@ class CameraPickerState extends State<CameraPicker>
           tips = textDelegate.shootingOnlyRecordingTips;
         }
       } else {
-        tips = textDelegate.shootingWithRecordingTips;
+        if (isVideoMode) {
+          tips = textDelegate.shootingTapRecordingTips;
+        } else {
+          tips = textDelegate.shootingTips;
+        }
+        // tips = textDelegate.shootingWithRecordingTips;
       }
     } else {
       if (isVideoMode) {
