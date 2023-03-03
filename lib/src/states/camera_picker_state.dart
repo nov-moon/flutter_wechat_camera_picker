@@ -168,6 +168,13 @@ class CameraPickerState extends State<CameraPicker>
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      // 强制竖屏
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     ambiguate(WidgetsBinding.instance)?.addObserver(this);
     Constants.textDelegate = widget.pickerConfig.textDelegate ??
         cameraPickerTextDelegateFromLocale(widget.locale);
