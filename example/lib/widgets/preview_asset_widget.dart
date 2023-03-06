@@ -11,14 +11,14 @@ import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 class PreviewAssetWidget extends StatefulWidget {
   const PreviewAssetWidget(this.asset, {Key? key}) : super(key: key);
 
-  final AssetEntity asset;
+  final AssetEntityInfo asset;
 
   @override
   State<PreviewAssetWidget> createState() => _PreviewAssetWidgetState();
 }
 
 class _PreviewAssetWidgetState extends State<PreviewAssetWidget> {
-  bool get _isVideo => widget.asset.type == AssetType.video;
+  bool get _isVideo => widget.asset.assetEntity.type == AssetType.video;
   Object? _error;
   VideoPlayerController? _playerController;
 
@@ -37,7 +37,7 @@ class _PreviewAssetWidgetState extends State<PreviewAssetWidget> {
   }
 
   Future<void> _initializeController() async {
-    final String? url = await widget.asset.getMediaUrl();
+    final String? url = await widget.asset.assetEntity.getMediaUrl();
     if (url == null) {
       _error = NullThrownError();
       return;
@@ -64,7 +64,7 @@ class _PreviewAssetWidgetState extends State<PreviewAssetWidget> {
   }
 
   Widget _buildImage(BuildContext context) {
-    return AssetEntityImage(widget.asset);
+    return AssetEntityImage(widget.asset.assetEntity);
   }
 
   Widget _buildVideo(BuildContext context) {

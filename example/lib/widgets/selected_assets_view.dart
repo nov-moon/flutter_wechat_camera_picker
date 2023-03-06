@@ -16,7 +16,7 @@ class SelectedAssetView extends StatelessWidget {
     required this.onRemoveAsset,
   }) : super(key: key);
 
-  final AssetEntity asset;
+  final AssetEntityInfo asset;
   final ValueNotifier<bool> isDisplayingDetail;
   final VoidCallback onRemoveAsset;
 
@@ -38,7 +38,7 @@ class SelectedAssetView extends StatelessWidget {
         child: RepaintBoundary(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: AssetWidgetBuilder(entity: asset, isDisplayingDetail: value),
+            child: AssetWidgetBuilder(entity: asset.assetEntity, isDisplayingDetail: value),
           ),
         ),
       ),

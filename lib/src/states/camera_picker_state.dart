@@ -26,6 +26,7 @@ import '../widgets/camera_focus_point.dart';
 import '../widgets/camera_picker.dart';
 import '../widgets/camera_picker_viewer.dart';
 import '../widgets/camera_progress_button.dart';
+import 'asset_entity_info.dart';
 
 const Color _lockedColor = Colors.amber;
 const Duration _kDuration = Duration(milliseconds: 300);
@@ -639,7 +640,7 @@ class CameraPickerState extends State<CameraPicker>
         viewType: CameraPickerViewType.image,
       );
       if (entity != null) {
-        Navigator.of(context).pop(entity);
+        Navigator.of(context).pop(AssetEntityInfo(assetEntity: entity));
         return;
       }
       await controller.resumePreview();
@@ -752,7 +753,7 @@ class CameraPickerState extends State<CameraPicker>
         viewType: CameraPickerViewType.video,
       );
       if (entity != null) {
-        Navigator.of(context).pop(entity);
+        Navigator.of(context).pop(AssetEntityInfo(assetEntity: entity));
       } else {
         await controller.resumePreview();
       }
@@ -1021,7 +1022,8 @@ class CameraPickerState extends State<CameraPicker>
                         ),
                       );
                       if (result != null) {
-                        Navigator.of(context).pop(result.first);
+                        Navigator.of(context).pop(AssetEntityInfo(
+                            isLocalFile: true, assetEntity: result.first));
                         return;
                       }
                     },
