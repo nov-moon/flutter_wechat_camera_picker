@@ -21,11 +21,11 @@ class HomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<HomePage> {
   final ValueNotifier<bool> isDisplayingDetail = ValueNotifier<bool>(true);
-  final ValueNotifier<AssetEntity?> selectedAsset =
-      ValueNotifier<AssetEntity?>(null);
+  final ValueNotifier<AssetEntityInfo?> selectedAsset =
+      ValueNotifier<AssetEntityInfo?>(null);
 
   Future<void> selectAssets(PickMethod model) async {
-    final AssetEntity? result = await model.method(context);
+    final AssetEntityInfo? result = await model.method(context);
     if (result != null) {
       selectedAsset.value = result;
       if (mounted) {
@@ -92,9 +92,9 @@ class _MyHomePageState extends State<HomePage> {
                   onSelectMethod: selectAssets,
                 ),
               ),
-              ValueListenableBuilder<AssetEntity?>(
+              ValueListenableBuilder<AssetEntityInfo?>(
                 valueListenable: selectedAsset,
-                builder: (_, AssetEntity? asset, __) {
+                builder: (_, AssetEntityInfo? asset, __) {
                   if (asset == null) {
                     return const SizedBox.shrink();
                   }

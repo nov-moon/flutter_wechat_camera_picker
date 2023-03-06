@@ -12,6 +12,7 @@ export 'src/constants/enums.dart';
 export 'src/constants/type_defs.dart';
 
 export 'src/delegates/camera_picker_text_delegate.dart';
+export 'src/states/asset_entity_info.dart';
 
 export 'src/states/camera_picker_state.dart';
 export 'src/states/camera_picker_viewer_state.dart';

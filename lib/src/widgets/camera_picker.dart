@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 
 import '../constants/config.dart';
 import '../constants/constants.dart';
+import '../states/asset_entity_info.dart';
 import '../states/camera_picker_state.dart';
 
 import 'camera_picker_page_route.dart';
@@ -40,12 +41,12 @@ class CameraPicker extends StatefulWidget {
 
   /// Static method to create [AssetEntity] through camera.
   /// 通过相机创建 [AssetEntity] 的静态方法
-  static Future<AssetEntity?> pickFromCamera(
+  static Future<AssetEntityInfo?> pickFromCamera(
     BuildContext context, {
     CameraPickerConfig pickerConfig = const CameraPickerConfig(),
     CameraPickerState Function()? createPickerState,
     bool useRootNavigator = true,
-    CameraPickerPageRoute<AssetEntity> Function(Widget picker)?
+    CameraPickerPageRoute<AssetEntityInfo> Function(Widget picker)?
         pageRouteBuilder,
     Locale? locale,
   }) {
@@ -57,9 +58,9 @@ class CameraPicker extends StatefulWidget {
     return Navigator.of(
       context,
       rootNavigator: useRootNavigator,
-    ).push<AssetEntity>(
+    ).push<AssetEntityInfo>(
       pageRouteBuilder?.call(picker) ??
-          CameraPickerPageRoute<AssetEntity>(builder: (_) => picker),
+          CameraPickerPageRoute<AssetEntityInfo>(builder: (_) => picker),
     );
   }
 
