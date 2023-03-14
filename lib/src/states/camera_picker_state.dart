@@ -1402,6 +1402,25 @@ class CameraPickerState extends State<CameraPicker>
               hidden: innerController == null,
               child: buildSettingActions(context),
             ),
+            if ((widget.title ?? '').isNotEmpty)
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.all(30),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.black.withOpacity(0.6),
+                  ),
+                  child: Text(
+                    widget.title ?? '',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14),
+                  ),
+                ),
+              ),
             const Spacer(),
             ExcludeSemantics(child: buildCaptureTips(innerController)),
             Semantics(
