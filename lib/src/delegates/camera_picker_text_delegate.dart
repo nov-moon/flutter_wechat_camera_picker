@@ -37,6 +37,8 @@ class CameraPickerTextDelegate {
   /// 确认按钮的字段
   String get confirm => '确认';
 
+  String get editor => '编辑';
+
   /// Tips above the shooting button before shooting.
   /// 拍摄前确认按钮上方的提示文字
   String get shootingTips => '轻触拍照';
@@ -132,6 +134,9 @@ class EnglishCameraPickerTextDelegate extends CameraPickerTextDelegate {
 
   @override
   String get confirm => 'Confirm';
+
+  @override
+  String get editor => 'Edit';
 
   @override
   String get shootingTips => 'Tap to take photo.';

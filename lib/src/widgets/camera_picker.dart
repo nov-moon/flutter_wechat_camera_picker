@@ -27,6 +27,7 @@ class CameraPicker extends StatefulWidget {
     this.pickerConfig = const CameraPickerConfig(),
     this.createPickerState,
     this.locale,
+    this.title,
   }) : super(key: key);
 
   /// {@macro wechat_camera_picker.CameraPickerConfig}
@@ -39,6 +40,8 @@ class CameraPicker extends StatefulWidget {
   /// The [Locale] to determine text delegates for the picker.
   final Locale? locale;
 
+  final String? title;
+
   /// Static method to create [AssetEntity] through camera.
   /// 通过相机创建 [AssetEntity] 的静态方法
   static Future<AssetEntityInfo?> pickFromCamera(
@@ -49,11 +52,13 @@ class CameraPicker extends StatefulWidget {
     CameraPickerPageRoute<AssetEntityInfo> Function(Widget picker)?
         pageRouteBuilder,
     Locale? locale,
+    String? title,
   }) {
     final Widget picker = CameraPicker(
       pickerConfig: pickerConfig,
       createPickerState: createPickerState,
       locale: locale,
+      title: title,
     );
     return Navigator.of(
       context,
