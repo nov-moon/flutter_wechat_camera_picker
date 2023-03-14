@@ -17,3 +17,4 @@ dependencies:
   photo_manager: ^2.4.0
   video_player: ^2.3.2
   wechat_assets_picker: 8.3.2
+  image_editor_plus: ^0.1.8

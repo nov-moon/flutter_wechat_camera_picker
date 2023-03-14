@@ -5,9 +5,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'package:image_editor_plus/image_editor_plus.dart';
+import 'package:image_editor_plus/utils.dart';
 import 'package:path/path.dart' as path;
 import 'package:video_player/video_player.dart';
 
@@ -259,6 +263,65 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
   }
 
   /// The confirm button for the preview section.
+  /// 预览区的编辑图片按钮
+  Widget buildEditorImageButton(BuildContext context) {
+    final CameraPickerViewType viewType = widget.viewType;
+    if (viewType == CameraPickerViewType.image) {
+      return MaterialButton(
+        minWidth: 20,
+        height: 32,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        color: Colors.grey[600]?.withOpacity(0.8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: toImageEditorPage,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Text(
+          Constants.textDelegate.editor,
+          style: TextStyle(
+            color: theme.textTheme.bodyText1?.color,
+            fontSize: 17,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  Future<void> toImageEditorPage() async {
+    if (isSavingEntity) {
+      return;
+    }
+    setState(() {
+      isSavingEntity = true;
+    });
+    final Uint8List convertedImage = await ImageUtils.convert<String>(
+      widget.previewXFile?.path ?? '', // <-- Uint8List/path of image
+      format: 'jpg',
+    );
+    setState(() {
+      isSavingEntity = false;
+    });
+    final editedImage = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => ImageEditor(
+          image: convertedImage,
+        ),
+      ),
+    );
+
+    if(editedImage != null && editedImage is Uint8List) {
+      final File file = await File(widget.previewXFile?.path ?? '').create();
+      file.writeAsBytesSync(editedImage);
+      createAssetEntityAndPop();
+    }
+  }
+
+  /// The confirm button for the preview section.
   /// 预览区的确认按钮
   Widget buildConfirmButton(BuildContext context) {
     return MaterialButton(
@@ -332,9 +395,12 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
             ),
             Semantics(
               sortKey: const OrdinalSortKey(2),
-              child: Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: buildConfirmButton(context),
+              child: Row(
+                children: [
+                  buildEditorImageButton(context),
+                  const Spacer(),
+                  buildConfirmButton(context),
+                ],
               ),
             ),
           ],
