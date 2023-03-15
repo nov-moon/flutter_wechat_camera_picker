@@ -10,6 +10,7 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_editor_plus/image_editor_plus.dart';
 import 'package:image_editor_plus/utils.dart';
 import 'package:path/path.dart' as path;
@@ -298,9 +299,10 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
     setState(() {
       isSavingEntity = true;
     });
-    final Uint8List convertedImage = await ImageUtils.convert<String>(
-      widget.previewXFile?.path ?? '', // <-- Uint8List/path of image
-      format: 'jpg',
+    final Uint8List? convertedImage = await FlutterImageCompress.compressWithFile(
+      widget.previewXFile?.path ?? '',
+      quality: 80,
+      keepExif: true,
     );
     setState(() {
       isSavingEntity = false;
