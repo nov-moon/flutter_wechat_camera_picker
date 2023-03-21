@@ -7,12 +7,10 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_editor_plus/image_editor_plus.dart';
-import 'package:image_editor_plus/utils.dart';
 import 'package:path/path.dart' as path;
 import 'package:video_player/video_player.dart';
 
