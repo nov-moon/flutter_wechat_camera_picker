@@ -869,7 +869,7 @@ class CameraPickerState extends State<CameraPicker>
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             children: <Widget>[
-              if (controller?.value.isRecordingVideo != true)
+              if (controller.value.isRecordingVideo != true)
                 Expanded(child: buildBackButton(context)),
               const Spacer(),
               if (cameras.length > 1) buildCameraSwitch(context),
