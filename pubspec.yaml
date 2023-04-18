@@ -18,4 +18,5 @@ dependencies:
   video_player: ^2.3.2
   wechat_assets_picker: 8.3.2
   flutter_image_compress: 1.1.0
-  image_editor_dove: ^0.0.2
+  image_editor_dove:
+    path: ../flutter_image_editor
