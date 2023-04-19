@@ -247,7 +247,8 @@ class CameraPickerState extends State<CameraPicker>
     if (scale < 1) {
       scale = 1 / scale;
     }
-    return scale;
+    // return scale; // modify by ypq 20230419 原因是缩放后导致拍摄和生成图片效果不一致。
+    return 1;
   }
 
   /// Initialize cameras instances.
