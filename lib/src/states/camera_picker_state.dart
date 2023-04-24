@@ -171,11 +171,25 @@ class CameraPickerState extends State<CameraPicker>
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      // 强制竖屏
+      // DeviceOrientation.landscapeLeft,
+      // DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     _streamSubscription = accelerometerEvents.listen(
       (AccelerometerEvent event) {
-        setState(() {
-          acceleration = event;
-        });
+        acceleration = event;
+        _direct = directionFromCoordinates(
+          acceleration?.x ?? 0.0,
+          acceleration?.y ?? 0.0,
+        );
+        if (direct != _direct) {
+          setState(() {
+            direct = _direct;
+          });
+        }
       },
     );
     ambiguate(WidgetsBinding.instance)?.addObserver(this);
@@ -1000,19 +1014,17 @@ class CameraPickerState extends State<CameraPicker>
           if (controller?.value.isRecordingVideo != true)
             Expanded(
                 child: RotatedBox(
-                  quarterTurns: direct,
-                  child: IconButton(
-                      onPressed: () {
-                        isVideoMode = !isVideoMode;
-                        setState(() {});
-                      },
-                      icon: Icon(
-                        isVideoMode
-                            ? Icons.photo
-                            : Icons.video_camera_back_rounded,
-                        color: Colors.white,
-                      )),
-                )),
+              quarterTurns: direct,
+              child: IconButton(
+                  onPressed: () {
+                    isVideoMode = !isVideoMode;
+                    setState(() {});
+                  },
+                  icon: Icon(
+                    isVideoMode ? Icons.photo : Icons.video_camera_back_rounded,
+                    color: Colors.white,
+                  )),
+            )),
           Expanded(
             child: Center(
               child: MergeSemantics(child: buildCaptureButton(constraints)),
@@ -1021,27 +1033,27 @@ class CameraPickerState extends State<CameraPicker>
           if (controller?.value.isRecordingVideo != true)
             Expanded(
                 child: RotatedBox(
-                  quarterTurns: direct,
-                  child: IconButton(
-                      onPressed: () async {
-                        final List<AssetEntity>? result =
-                            await AssetPicker.pickAssets(
-                          context,
-                          pickerConfig: const AssetPickerConfig(
-                            maxAssets: 1,
-                          ),
-                        );
-                        if (result != null) {
-                          Navigator.of(context).pop(AssetEntityInfo(
-                              isLocalFile: true, assetEntity: result.first));
-                          return;
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.photo_library,
-                        color: Colors.white,
-                      )),
-                )),
+              quarterTurns: direct,
+              child: IconButton(
+                  onPressed: () async {
+                    final List<AssetEntity>? result =
+                        await AssetPicker.pickAssets(
+                      context,
+                      pickerConfig: const AssetPickerConfig(
+                        maxAssets: 1,
+                      ),
+                    );
+                    if (result != null) {
+                      Navigator.of(context).pop(AssetEntityInfo(
+                          isLocalFile: true, assetEntity: result.first));
+                      return;
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.photo_library,
+                    color: Colors.white,
+                  )),
+            )),
         ],
       ),
     );
@@ -1415,62 +1427,66 @@ class CameraPickerState extends State<CameraPicker>
 
   AccelerometerEvent? acceleration;
 
-  int get direct {
-    return directionFromCoordinates(
-      acceleration?.x ?? 0.0,
-      acceleration?.y ?? 0.0,
-    );
-  }
+  int _direct = 0;
+  int direct = 0;
 
   Widget buildForegroundBody(BuildContext context, BoxConstraints constraints) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(bottom: 20),
-        child: Column(
-          children: <Widget>[
-            Semantics(
-              sortKey: const OrdinalSortKey(0),
-              hidden: innerController == null,
-              child: buildSettingActions(context),
-            ),
-            if ((widget.title ?? '').isNotEmpty)
-              Expanded(
-                child: RotatedBox(
-                  quarterTurns: direct,
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.all(30),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.black.withOpacity(0.6),
-                        ),
-                        child: Text(
-                          widget.title ?? '',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14),
-                        ),
-                      ),
-                    ],
+        child: Stack(
+          children: [
+            Column(
+              children: <Widget>[
+                Semantics(
+                  sortKey: const OrdinalSortKey(0),
+                  hidden: innerController == null,
+                  child: buildSettingActions(context),
+                ),
+                const Spacer(),
+                ExcludeSemantics(child: buildCaptureTips(innerController)),
+                Semantics(
+                  sortKey: const OrdinalSortKey(2),
+                  hidden: innerController == null,
+                  child: buildCaptureActions(
+                    context: context,
+                    constraints: constraints,
+                    controller: innerController,
                   ),
                 ),
-              )
-            else
-              const Spacer(),
-            ExcludeSemantics(child: buildCaptureTips(innerController)),
-            Semantics(
-              sortKey: const OrdinalSortKey(2),
-              hidden: innerController == null,
-              child: buildCaptureActions(
-                context: context,
-                constraints: constraints,
-                controller: innerController,
-              ),
+              ],
             ),
+            Positioned(
+                left: 0,
+                right: 0,
+                top: 100,
+                bottom: 100,
+                child: Visibility(
+                  visible: (widget.title ?? '').isNotEmpty,
+                  child: RotatedBox(
+                    quarterTurns: direct,
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(30),
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.black.withOpacity(0.6),
+                          ),
+                          child: Text(
+                            widget.title ?? '',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ))
           ],
         ),
       ),
