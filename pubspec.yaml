@@ -20,3 +20,4 @@ dependencies:
   flutter_image_compress: 1.1.0
   image_editor_dove:
     path: ../flutter_image_editor
+  sensors_plus: ^2.0.3

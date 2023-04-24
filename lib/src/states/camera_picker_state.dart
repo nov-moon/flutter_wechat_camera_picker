@@ -13,6 +13,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/config.dart';
@@ -165,17 +166,18 @@ class CameraPickerState extends State<CameraPicker>
       pickerConfig.theme ?? CameraPicker.themeData(wechatThemeColor);
 
   CameraPickerTextDelegate get textDelegate => Constants.textDelegate;
+  late StreamSubscription<dynamic> _streamSubscription;
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      // 强制竖屏
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
-    ]);
+    _streamSubscription = accelerometerEvents.listen(
+      (AccelerometerEvent event) {
+        setState(() {
+          acceleration = event;
+        });
+      },
+    );
     ambiguate(WidgetsBinding.instance)?.addObserver(this);
     Constants.textDelegate = widget.pickerConfig.textDelegate ??
         cameraPickerTextDelegateFromLocale(widget.locale);
@@ -192,6 +194,7 @@ class CameraPickerState extends State<CameraPicker>
 
   @override
   void dispose() {
+    _streamSubscription.cancel();
     if (!Platform.isAndroid) {
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     }
@@ -204,11 +207,6 @@ class CameraPickerState extends State<CameraPicker>
     exposureModeDisplayTimer?.cancel();
     recordDetectTimer?.cancel();
     recordCountdownTimer?.cancel();
-    SystemChrome.setPreferredOrientations([
-      // 强制竖屏
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
-    ]);
     super.dispose();
   }
 
@@ -886,24 +884,27 @@ class CameraPickerState extends State<CameraPicker>
   /// The button to switch between cameras.
   /// 切换相机的按钮
   Widget buildCameraSwitch(BuildContext context) {
-    return IconButton(
-      tooltip: textDelegate.sSwitchCameraLensDirectionLabel(
-        nextCameraDescription.lensDirection,
-      ),
-      onPressed: switchCameras,
-      icon: Container(
-        alignment: Alignment.center,
-        width: 32,
-        height: 32,
-        decoration: const BoxDecoration(
-          color: Colors.black54,
-          shape: BoxShape.circle,
+    return RotatedBox(
+      quarterTurns: direct,
+      child: IconButton(
+        tooltip: textDelegate.sSwitchCameraLensDirectionLabel(
+          nextCameraDescription.lensDirection,
         ),
-        child: Icon(
-          Platform.isIOS
-              ? Icons.flip_camera_ios_outlined
-              : Icons.flip_camera_android_outlined,
-          size: 20,
+        onPressed: switchCameras,
+        icon: Container(
+          alignment: Alignment.center,
+          width: 32,
+          height: 32,
+          decoration: const BoxDecoration(
+            color: Colors.black54,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Platform.isIOS
+                ? Icons.flip_camera_ios_outlined
+                : Icons.flip_camera_android_outlined,
+            size: 20,
+          ),
         ),
       ),
     );
@@ -927,18 +928,21 @@ class CameraPickerState extends State<CameraPicker>
         icon = Icons.flashlight_on;
         break;
     }
-    return IconButton(
-      onPressed: () => switchFlashesMode(value),
-      tooltip: textDelegate.sFlashModeLabel(value.flashMode),
-      icon: Container(
-        alignment: Alignment.center,
-        width: 32,
-        height: 32,
-        decoration: const BoxDecoration(
-          color: Colors.black54,
-          shape: BoxShape.circle,
+    return RotatedBox(
+      quarterTurns: direct,
+      child: IconButton(
+        onPressed: () => switchFlashesMode(value),
+        tooltip: textDelegate.sFlashModeLabel(value.flashMode),
+        icon: Container(
+          alignment: Alignment.center,
+          width: 32,
+          height: 32,
+          decoration: const BoxDecoration(
+            color: Colors.black54,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, size: 20),
         ),
-        child: Icon(icon, size: 20),
       ),
     );
   }
@@ -995,17 +999,20 @@ class CameraPickerState extends State<CameraPicker>
         children: <Widget>[
           if (controller?.value.isRecordingVideo != true)
             Expanded(
-                child: IconButton(
-                    onPressed: () {
-                      isVideoMode = !isVideoMode;
-                      setState(() {});
-                    },
-                    icon: Icon(
-                      isVideoMode
-                          ? Icons.photo
-                          : Icons.video_camera_back_rounded,
-                      color: Colors.white,
-                    ))),
+                child: RotatedBox(
+                  quarterTurns: direct,
+                  child: IconButton(
+                      onPressed: () {
+                        isVideoMode = !isVideoMode;
+                        setState(() {});
+                      },
+                      icon: Icon(
+                        isVideoMode
+                            ? Icons.photo
+                            : Icons.video_camera_back_rounded,
+                        color: Colors.white,
+                      )),
+                )),
           Expanded(
             child: Center(
               child: MergeSemantics(child: buildCaptureButton(constraints)),
@@ -1013,25 +1020,28 @@ class CameraPickerState extends State<CameraPicker>
           ),
           if (controller?.value.isRecordingVideo != true)
             Expanded(
-                child: IconButton(
-                    onPressed: () async {
-                      final List<AssetEntity>? result =
-                          await AssetPicker.pickAssets(
-                        context,
-                        pickerConfig: const AssetPickerConfig(
-                          maxAssets: 1,
-                        ),
-                      );
-                      if (result != null) {
-                        Navigator.of(context).pop(AssetEntityInfo(
-                            isLocalFile: true, assetEntity: result.first));
-                        return;
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.photo_library,
-                      color: Colors.white,
-                    ))),
+                child: RotatedBox(
+                  quarterTurns: direct,
+                  child: IconButton(
+                      onPressed: () async {
+                        final List<AssetEntity>? result =
+                            await AssetPicker.pickAssets(
+                          context,
+                          pickerConfig: const AssetPickerConfig(
+                            maxAssets: 1,
+                          ),
+                        );
+                        if (result != null) {
+                          Navigator.of(context).pop(AssetEntityInfo(
+                              isLocalFile: true, assetEntity: result.first));
+                          return;
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.photo_library,
+                        color: Colors.white,
+                      )),
+                )),
         ],
       ),
     );
@@ -1040,20 +1050,23 @@ class CameraPickerState extends State<CameraPicker>
   /// The back button near to the [buildCaptureButton].
   /// 靠近拍照键的返回键
   Widget buildBackButton(BuildContext context) {
-    return IconButton(
-      onPressed: Navigator.of(context).pop,
-      tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-      icon: Container(
-        alignment: Alignment.center,
-        width: 32,
-        height: 32,
-        decoration: const BoxDecoration(
-          color: Colors.black54,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.close,
-          color: Colors.white,
+    return RotatedBox(
+      quarterTurns: direct,
+      child: IconButton(
+        onPressed: Navigator.of(context).pop,
+        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+        icon: Container(
+          alignment: Alignment.center,
+          width: 32,
+          height: 32,
+          decoration: const BoxDecoration(
+            color: Colors.black54,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.close,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -1392,6 +1405,23 @@ class CameraPickerState extends State<CameraPicker>
     );
   }
 
+  int directionFromCoordinates(double x, double y) {
+    if (x.abs() < y.abs()) {
+      return y > 0 ? 0 : 2;
+    } else {
+      return x > 0 ? 1 : 3;
+    }
+  }
+
+  AccelerometerEvent? acceleration;
+
+  int get direct {
+    return directionFromCoordinates(
+      acceleration?.x ?? 0.0,
+      acceleration?.y ?? 0.0,
+    );
+  }
+
   Widget buildForegroundBody(BuildContext context, BoxConstraints constraints) {
     return SafeArea(
       child: Padding(
@@ -1404,25 +1434,33 @@ class CameraPickerState extends State<CameraPicker>
               child: buildSettingActions(context),
             ),
             if ((widget.title ?? '').isNotEmpty)
-              Center(
-                child: Container(
-                  margin: const EdgeInsets.all(30),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.black.withOpacity(0.6),
-                  ),
-                  child: Text(
-                    widget.title ?? '',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14),
+              Expanded(
+                child: RotatedBox(
+                  quarterTurns: direct,
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(30),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.black.withOpacity(0.6),
+                        ),
+                        child: Text(
+                          widget.title ?? '',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            const Spacer(),
+              )
+            else
+              const Spacer(),
             ExcludeSemantics(child: buildCaptureTips(innerController)),
             Semantics(
               sortKey: const OrdinalSortKey(2),
