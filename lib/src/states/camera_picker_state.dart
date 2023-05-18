@@ -1043,7 +1043,7 @@ class CameraPickerState extends State<CameraPicker>
                         maxAssets: 1,
                       ),
                     );
-                    if (result != null) {
+                    if (result != null&&result.isNotEmpty) {
                       Navigator.of(context).pop(AssetEntityInfo(
                           isLocalFile: true, assetEntity: result.first));
                       return;
