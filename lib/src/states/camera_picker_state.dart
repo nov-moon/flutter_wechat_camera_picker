@@ -1035,19 +1035,8 @@ class CameraPickerState extends State<CameraPicker>
                 child: RotatedBox(
               quarterTurns: direct,
               child: IconButton(
-                  onPressed: () async {
-                    final List<AssetEntity>? result =
-                        await AssetPicker.pickAssets(
-                      context,
-                      pickerConfig: const AssetPickerConfig(
-                        maxAssets: 1,
-                      ),
-                    );
-                    if (result != null&&result.isNotEmpty) {
-                      Navigator.of(context).pop(AssetEntityInfo(
-                          isLocalFile: true, assetEntity: result.first));
-                      return;
-                    }
+                  onPressed: () {
+                    pickAssetPicture();
                   },
                   icon: const Icon(
                     Icons.photo_library,
@@ -1057,6 +1046,23 @@ class CameraPickerState extends State<CameraPicker>
         ],
       ),
     );
+  }
+
+  Future<void> pickAssetPicture() async {
+    if (controller.value.isTakingPicture) {
+      return;
+    }
+    final List<AssetEntity>? result = await AssetPicker.pickAssets(
+      context,
+      pickerConfig: const AssetPickerConfig(
+        maxAssets: 1,
+      ),
+    );
+    if (result != null && result.isNotEmpty) {
+      Navigator.of(context)
+          .pop(AssetEntityInfo(isLocalFile: true, assetEntity: result.first));
+      return;
+    }
   }
 
   /// The back button near to the [buildCaptureButton].
