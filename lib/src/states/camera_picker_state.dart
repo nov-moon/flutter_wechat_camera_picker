@@ -292,7 +292,7 @@ class CameraPickerState extends State<CameraPicker>
     ambiguate(WidgetsBinding.instance)?.addPostFrameCallback((_) async {
       // When the [cameraDescription] is null, which means this is the first
       // time initializing cameras, so available cameras should be fetched.
-      if (cameraDescription == null) {
+      if (cameraDescription == null && cameras.isEmpty) {
         cameras = await availableCameras();
       }
 
