@@ -20,7 +20,7 @@ dependencies:
   flutter_image_compress: 1.1.0
   image_editor_dove:
     git:
-      url: https://github.com/nov-moon/flutter_image_editor.git
+      url: https://github.com/nov-moon/image_editor_dove.git
       ref: main
   #    path: ../flutter_image_editor
   sensors_plus: ^2.0.3
