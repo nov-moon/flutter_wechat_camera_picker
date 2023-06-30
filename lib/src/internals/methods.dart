@@ -25,7 +25,7 @@ void handleErrorWithHandler(
     handler(e, s);
     return;
   }
-  throw e;
+  // throw e; add ypq 这里没有崩溃情况就不往外抛了。20230518
 }
 
 T? ambiguate<T>(T value) => value;

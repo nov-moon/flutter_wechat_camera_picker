@@ -7,12 +7,10 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_editor_plus/image_editor_plus.dart';
-import 'package:image_editor_plus/utils.dart';
+import 'package:image_editor_dove/image_editor.dart';
 import 'package:path/path.dart' as path;
 import 'package:video_player/video_player.dart';
 
@@ -296,29 +294,30 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
     if (isSavingEntity) {
       return;
     }
-    setState(() {
-      isSavingEntity = true;
-    });
-    final Uint8List? convertedImage = await FlutterImageCompress.compressWithFile(
-      widget.previewXFile?.path ?? '',
-      quality: 80,
-      keepExif: true,
-    );
-    setState(() {
-      isSavingEntity = false;
-    });
+    // setState(() {
+    //   isSavingEntity = true;
+    // });
+    // final Uint8List? convertedImage = await FlutterImageCompress.compressWithFile(
+    //   widget.previewXFile?.path ?? '',
+    //   quality: 80,
+    //   keepExif: true,
+    // );
+    // setState(() {
+    //   isSavingEntity = false;
+    // });
+    File originFile = File(widget.previewXFile?.path ?? '');
     final editedImage = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (BuildContext context) => ImageEditor(
-          image: convertedImage,
+          originImage: originFile,
         ),
       ),
     );
 
-    if(editedImage != null && editedImage is Uint8List) {
-      final File file = await File(widget.previewXFile?.path ?? '').create();
-      file.writeAsBytesSync(editedImage);
+    if(editedImage != null&&editedImage is EditorImageResult) {
+      await originFile.delete();
+      await editedImage.newFile.rename(widget.previewXFile?.path??'');
       createAssetEntityAndPop();
     }
   }
