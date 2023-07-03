@@ -745,7 +745,7 @@ class CameraPickerState extends State<CameraPicker>
       safeSetState(() {});
     }
 
-    if (!controller.value.isRecordingVideo) {
+    if (controller == null || !controller.value.isRecordingVideo) {
       handleError();
       return;
     }
