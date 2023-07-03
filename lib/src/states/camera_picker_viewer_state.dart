@@ -14,6 +14,7 @@ import 'package:image_editor_dove/image_editor.dart';
 import 'package:path/path.dart' as path;
 import 'package:video_player/video_player.dart';
 
+import '../../wechat_camera_picker.dart';
 import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/styles.dart';
@@ -190,7 +191,11 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
     } finally {
       isSavingEntity = false;
       if (mounted) {
-        Navigator.of(context).pop(entity);
+        if (entity == null) {
+          Navigator.of(context).pop();
+        } else {
+          Navigator.of(context).pop(AssetEntityInfo(assetEntity: entity));
+        }
       }
     }
   }
@@ -315,9 +320,9 @@ class CameraPickerViewerState extends State<CameraPickerViewer> {
       ),
     );
 
-    if(editedImage != null&&editedImage is EditorImageResult) {
+    if (editedImage != null && editedImage is EditorImageResult) {
       await originFile.delete();
-      await editedImage.newFile.rename(widget.previewXFile?.path??'');
+      await editedImage.newFile.rename(widget.previewXFile?.path ?? '');
       createAssetEntityAndPop();
     }
   }
