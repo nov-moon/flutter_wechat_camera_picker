@@ -630,7 +630,7 @@ class CameraPickerState extends State<CameraPicker>
   /// and the camera is not taking pictures.
   /// 仅当初始化成功且相机未在拍照时拍照。
   Future<void> takePicture() async {
-    if (!controller.value.isInitialized) {
+    if (controller == null || !controller.value.isInitialized) {
       handleErrorWithHandler(
         StateError('Camera has not initialized.'),
         pickerConfig.onError,
@@ -704,7 +704,7 @@ class CameraPickerState extends State<CameraPicker>
   /// Set record file path and start recording.
   /// 设置拍摄文件路径并开始录制视频
   Future<void> startRecordingVideo() async {
-    if (controller.value.isRecordingVideo) {
+    if (controller == null || controller.value.isRecordingVideo) {
       return;
     }
     try {
@@ -1050,7 +1050,7 @@ class CameraPickerState extends State<CameraPicker>
   }
 
   Future<void> pickAssetPicture() async {
-    if (controller.value.isTakingPicture) {
+    if (controller == null || controller.value.isTakingPicture) {
       return;
     }
     final List<AssetEntity>? result = await AssetPicker.pickAssets(
